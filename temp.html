@@ -1,0 +1,1598 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>
+        Ascenso OTR &amp; Off-Road Tyres - Marksmen Group    </title>
+
+    <meta name="csrf-token" content="z9wqK99bFmUW6X0SBAqhoLx565h0MWQMBTWVCUDK">
+
+    <meta name="description"
+          content="">
+
+    <link rel="stylesheet"
+          href="http://127.0.0.1:8000/frontend/css/style.css">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+    .ascenso-slider-wrap {
+      max-width: 1200px !important; margin: 0 auto !important; display: flex; align-items: center; justify-content: space-between; padding: 0 15px !important; width: 100%;
+    }
+    .ascenso-slider-l {
+      flex: 0 0 550px !important; width: 550px !important; padding-top: 50px;
+    }
+    .ascenso-slider-r {
+      flex: 0 0 560px !important; width: 560px !important; display: flex; gap: 10px; height: 450px;
+    }
+    #ascenso-accordion .acc-panel {
+      flex: 0 0 50px !important; min-width: 0 !important; width: 50px !important;
+    }
+    #ascenso-accordion .acc-panel.active {
+      flex: 0 1 320px !important; min-width: 0 !important; width: 320px !important;
+    }
+    @media(max-width: 991px) {
+      .ascenso-slider-wrap {
+        flex-direction: column; padding-top: 20px; gap: 40px;
+      }
+      .ascenso-slider-l {
+        flex: 1 1 auto; max-width: 100%; padding-top: 0; text-align: center;
+      }
+      .ascenso-slider-r {
+        flex: 1 1 auto; max-width: 100%; width: 100%; height: 600px; flex-direction: column; justify-content: flex-start;
+      }
+      #ascenso-accordion .acc-panel {
+        flex: 0 0 75px !important; min-width: 0 !important; width: 100% !important;
+      }
+      #ascenso-accordion .acc-panel.active {
+        flex: 1 !important; min-height: 200px !important; width: 100% !important;
+      }
+      #ascenso-accordion .acc-title-vertical {
+        writing-mode: horizontal-tb !important; transform: none !important;
+        justify-content: center !important; align-items: flex-end !important;
+        padding-bottom: 20px !important;
+      }
+      #ascenso-accordion .acc-title-horizontal {
+        bottom: 20px !important;
+      }
+    }
+    .achiever-card:hover {
+      box-shadow: 0 10px 20px rgba(241, 90, 34, 0.15);
+    }
+    .achiever-card:hover .ach-img {
+      transform: scale(1.05);
+    }
+    .acc-panel img {
+      transition: transform 0.5s ease;
+    }
+    .acc-panel:hover img {
+      transform: scale(1.05);
+    }
+</style>
+
+<script id="browser-logger-active">
+(function() {
+    const ENDPOINT = 'http://127.0.0.1:8000/_boost/browser-logs';
+    const logQueue = [];
+    let flushTimeout = null;
+    const captureTypes = ["error","warning","info","log","debug","table"];
+
+    console.log('🔍 Browser logger active (MCP server detected). Posting to: ' + ENDPOINT);
+
+    // Store original console methods
+    const originalConsole = {
+        log: console.log,
+        debug: console.debug,
+        info: console.info,
+        error: console.error,
+        warn: console.warn,
+        table: console.table
+    };
+
+    // Walk own enumerable keys so JSON.stringify cannot auto-invoke a proxy fake toJSON (e.g. Livewire's `$wire`) and fire a real request.
+    function toSafeValue(value, seen) {
+        if (value === null || typeof value !== 'object') {
+            return value;
+        }
+        if (value instanceof Error) {
+            return { name: value.name, message: value.message, stack: value.stack };
+        }
+        // Date has no own enumerable keys, so the walk below would collapse it to {}.
+        if (value instanceof Date) {
+            return value.toISOString();
+        }
+        if (seen.has(value)) {
+            return '[Circular]';
+        }
+        seen.add(value);
+        if (Array.isArray(value)) {
+            return value.map((item) => toSafeValue(item, seen));
+        }
+        const plain = {};
+        for (const key of Object.keys(value)) {
+            if (key === 'toJSON') continue;
+            try {
+                plain[key] = toSafeValue(value[key], seen);
+            } catch (e) {
+                plain[key] = '[Unreadable]';
+            }
+        }
+        return plain;
+    }
+
+    // Helper to safely stringify values
+    function safeStringify(obj) {
+        return JSON.stringify(toSafeValue(obj, new WeakSet()));
+    }
+
+    // Normalize log type for consistency (e.g., 'warn' to 'warning')
+    function normalizeType(type) {
+        return type === 'warn' ? 'warning' : type;
+    }
+
+    // Determine if a log type should be captured based on configured levels
+    function shouldCapture(type) {
+        return captureTypes.includes(normalizeType(type));
+    }
+
+    // Batch and send logs
+    function flushLogs() {
+        if (logQueue.length === 0) return;
+
+        const batch = logQueue.splice(0, logQueue.length);
+
+        fetch(ENDPOINT, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: JSON.stringify({ logs: batch })
+        }).catch(err => {
+            // Silently fail to avoid infinite loops
+            originalConsole.error('Failed to send logs:', err);
+        });
+    }
+
+    // Debounced flush (100ms)
+    function scheduleFlush() {
+        if (flushTimeout) clearTimeout(flushTimeout);
+        flushTimeout = setTimeout(flushLogs, 100);
+    }
+
+    // Intercept console methods
+    ['log', 'debug', 'info', 'error', 'warn', 'table'].forEach(method => {
+        console[method] = function(...args) {
+            // Call original method
+            originalConsole[method].apply(console, args);
+
+            // Capture log data
+            try {
+                if (!shouldCapture(method)) {
+                    return;
+                }
+
+                logQueue.push({
+                    type: method,
+                    timestamp: new Date().toISOString(),
+                    data: args.map(arg => {
+                        try {
+                            return typeof arg === 'object' ? JSON.parse(safeStringify(arg)) : arg;
+                        } catch (e) {
+                            return String(arg);
+                        }
+                    }),
+                    url: window.location.href,
+                    userAgent: navigator.userAgent
+                });
+
+                scheduleFlush();
+            } catch (e) {
+                // Fail silently
+            }
+        };
+    });
+
+    // Global error handlers for uncaught errors
+    const originalOnError = window.onerror;
+    window.onerror = function boostErrorHandler(errorMsg, url, lineNumber, colNumber, error) {
+        try {
+            if (shouldCapture('error')) {
+                logQueue.push({
+                    type: 'uncaught_error',
+                    timestamp: new Date().toISOString(),
+                    data: [{
+                        message: errorMsg,
+                        filename: url,
+                        lineno: lineNumber,
+                        colno: colNumber,
+                        error: error ? {
+                            name: error.name,
+                            message: error.message,
+                            stack: error.stack
+                        } : null
+                    }],
+                    url: window.location.href,
+                    userAgent: navigator.userAgent
+                });
+
+                scheduleFlush();
+            }
+
+        } catch (e) {
+            // Fail silently
+        }
+
+        // Call original handler if it exists
+        if (originalOnError && typeof originalOnError === 'function') {
+            return originalOnError(errorMsg, url, lineNumber, colNumber, error);
+        }
+
+        // Let the error continue to propagate
+        return false;
+    }
+    window.addEventListener('error', (event) => {
+        try {
+            if (!shouldCapture('error')) {
+                return false;
+            }
+
+            logQueue.push({
+                type: 'window_error',
+                timestamp: new Date().toISOString(),
+                data: [{
+                    message: event.message,
+                    filename: event.filename,
+                    lineno: event.lineno,
+                    colno: event.colno,
+                    error: event.error ? {
+                        name: event.error.name,
+                        message: event.error.message,
+                        stack: event.error.stack
+                    } : null
+                }],
+                url: window.location.href,
+                userAgent: navigator.userAgent
+            });
+
+            scheduleFlush();
+        } catch (e) {
+            // Fail silently
+        }
+
+        // Let the error continue to propagate
+        return false;
+    });
+    window.addEventListener('unhandledrejection', (event) => {
+        try {
+            if (!shouldCapture('error')) {
+                return false;
+            }
+
+            logQueue.push({
+                type: 'error',
+                timestamp: new Date().toISOString(),
+                data: [{
+                    message: 'Unhandled Promise Rejection',
+                    reason: toSafeValue(event.reason, new WeakSet())
+                }],
+                url: window.location.href,
+                userAgent: navigator.userAgent
+            });
+
+            scheduleFlush();
+        } catch (e) {
+            // Fail silently
+        }
+
+        // Let the rejection continue to propagate
+        return false;
+    });
+
+    // Flush on page unload
+    window.addEventListener('beforeunload', () => {
+        if (logQueue.length > 0) {
+            navigator.sendBeacon(ENDPOINT, JSON.stringify({ logs: logQueue }));
+        }
+    });
+})();
+</script>
+</head>
+
+<body>
+
+    <!-- TOP BAR (Exact Esinfraserve Style) -->
+  <div class="top-bar">
+    <div class="container top-bar-content">
+      <div class="top-bar-left">
+        <a href="https://www.linkedin.com/in/marksmen-construction-38b38a348/" target="_blank" title="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+        <a href="https://www.instagram.com/marksmen_group_/" target="_blank" title="Instagram"><i class="fa-brands fa-instagram"></i></a>
+        <a href="https://www.youtube.com/@MarketingMarksman" target="_blank" title="YouTube"><i class="fa-brands fa-youtube"></i></a>
+      </div>
+      <div class="top-bar-right">
+        <span>Incorporated since 2003, 23+ years experience in construction equipment & OTR tires</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN HEADER CONTAINER -->
+<header class="main-header">
+    <div class="header-grid-container">
+      
+      <!-- Logo Column (Left) -->
+      <div class="header-logo-col">
+        <a href="http://127.0.0.1:8000" class="logo-link">
+          <img src="http://127.0.0.1:8000/frontend/assets/images/logo.png" alt="Marksmen Group Logo" class="logo-img-ref">
+        </a>
+      </div>
+      
+      <!-- Right Content Column -->
+      <div class="header-right-col">
+        
+        <!-- Contact Details -->
+        <div class="header-contact-wrapper">
+          <div class="header-contact-row-top">
+            <div class="contact-detail-block">
+              <i class="fa-solid fa-location-crosshairs map-icon-gold"></i>
+              <a href="https://maps.google.com/?q=233+-+Ganesh+Nagar,+Bawadia+Kalan,+Ward+53,+Hoshangabad+Road,+Bhopal+-+462026" target="_blank">Bawadia Kalan, Bhopal</a>
+            </div>
+            <div class="contact-detail-block">
+              <i class="fa-solid fa-envelope-open-text envelope-icon-gold"></i>
+              <a href="mailto:info@marksmengroup.in">info@marksmengroup.in</a>
+            </div>
+          </div>
+          <div class="header-contact-row-bottom">
+            <div class="contact-detail-block">
+              <i class="fa-brands fa-square-whatsapp whatsapp-icon-green" style="font-size: 1.15rem;"></i>
+              <a href="https://wa.me/919893911155" target="_blank">+91 9893911155</a>
+              <span style="color: rgba(0,0,0,0.25); margin: 0 0.25rem;">/</span>
+              <a href="https://wa.me/919201987779" target="_blank">+91 9201987779</a>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Row 2: Navigation Bar (Dark Charcoal Block) -->
+        <div class="header-navigation-row">
+          <nav class="nav-menu-ref">
+            <a href="http://127.0.0.1:8000" class="nav-item active"><i class="fa-solid fa-house-chimney" style="font-size: 0.85rem; margin-right: 0.35rem;"></i> Home</a>
+            <a href="http://127.0.0.1:8000/about" class="nav-item"><i class="fa-solid fa-building-user" style="font-size: 0.85rem; margin-right: 0.35rem;"></i> About Us</a>
+            
+            <!-- Products & Services Dropdown -->
+            <div class="nav-dropdown">
+              <a href="http://127.0.0.1:8000/services" class="nav-item"><i class="fa-solid fa-layer-group" style="font-size: 0.85rem; margin-right: 0.35rem;"></i> Products & Services <i class="fa-solid fa-chevron-down" style="font-size: 0.7rem; margin-left: 0.25rem;"></i></a>
+              <div class="dropdown-menu">
+                <a href="http://127.0.0.1:8000/tata-hitachi" class="dropdown-item"><i class="fa-solid fa-truck-monster" style="font-size: 0.85rem; margin-right: 0.6rem; color: var(--accent);"></i> Tata Hitachi Heavy Machinery</a>
+                <a href="http://127.0.0.1:8000/schwing-stetter" class="dropdown-item"><i class="fa-solid fa-cubes-stacked" style="font-size: 0.85rem; margin-right: 0.6rem; color: var(--accent);"></i> Schwing Stetter Concrete Systems</a>
+                <a href="http://127.0.0.1:8000/ascenso-tyres" class="dropdown-item"><i class="fa-solid fa-circle-dot" style="font-size: 0.85rem; margin-right: 0.6rem; color: var(--accent);"></i> Ascenso OTR & Off-Road Tyres</a>
+                <a href="http://127.0.0.1:8000/eicher-trucks" class="dropdown-item"><i class="fa-solid fa-truck-fast" style="font-size: 0.85rem; margin-right: 0.6rem; color: var(--accent);"></i> Eicher Commercial Trucks</a>
+              </div>
+            </div>
+
+            <!-- Gallery Link -->
+            <a href="http://127.0.0.1:8000/gallery" class="nav-item"><i class="fa-solid fa-images" style="font-size: 0.85rem; margin-right: 0.35rem;"></i> Gallery</a>
+
+            <!-- Clients Dropdown -->
+            <div class="nav-dropdown">
+              <a href="http://127.0.0.1:8000/clients" class="nav-item"><i class="fa-solid fa-handshake" style="font-size: 0.85rem; margin-right: 0.35rem;"></i> Clients <i class="fa-solid fa-chevron-down" style="font-size: 0.7rem; margin-left: 0.25rem;"></i></a>
+              <div class="dropdown-menu">
+                <a href="http://127.0.0.1:8000/clients/oem" class="dropdown-item"><i class="fa-solid fa-handshake-angle" style="font-size: 0.85rem; margin-right: 0.6rem; color: var(--accent);"></i> Authorized OEM Alliances</a>
+                <a href="http://127.0.0.1:8000/clients/customers" class="dropdown-item"><i class="fa-solid fa-building-circle-check" style="font-size: 0.85rem; margin-right: 0.6rem; color: var(--accent);"></i> Prime Infrastructure Customers</a>
+              </div>
+            </div>
+
+            <a href="http://127.0.0.1:8000/careers" class="nav-item"><i class="fa-solid fa-briefcase" style="font-size: 0.85rem; margin-right: 0.35rem;"></i> Careers</a>
+            <a href="http://127.0.0.1:8000/contact" class="nav-item"><i class="fa-solid fa-headset" style="font-size: 0.85rem; margin-right: 0.35rem;"></i> Contact Us</a>
+          </nav>
+          
+          <!-- Hamburger menu for mobile -->
+          <button class="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+        </div>
+        
+      </div>
+      
+    </div>
+</header>
+
+<!-- MOBILE NAVIGATION DRAWER -->
+  <div class="mobile-nav">
+    <div class="mobile-nav-close">&times;</div>
+    <div class="mobile-menu">
+      <a href="http://127.0.0.1:8000" class="mobile-link active"><i class="fa-solid fa-house-chimney"></i> Home</a>
+      <a href="http://127.0.0.1:8000/about" class="mobile-link"><i class="fa-solid fa-building-user"></i> About Us</a>
+      <div class="mobile-nav-dropdown">
+        <div class="mobile-dropdown-header" style="display: flex; align-items: center; justify-content: space-between;"><a href="http://127.0.0.1:8000/services" class="mobile-link" style="flex: 1; border-bottom: none;"><i class="fa-solid fa-layer-group"></i> Products & Services</a><i class="fa-solid fa-chevron-down mobile-sub-toggle" style="padding: 15px; color: var(--accent); cursor: pointer; transition: transform 0.3s ease;"></i></div>
+        <div class="mobile-sub-menu" style="padding-left: 2rem; display: none; flex-direction: column; margin-bottom: 0.5rem;">
+          <a href="http://127.0.0.1:8000/tata-hitachi" class="mobile-link" style="font-size: 0.9rem; padding: 8px 10px; border-bottom: none;"><i class="fa-solid fa-truck-monster" style="font-size: 0.8rem;"></i> Tata Hitachi</a>
+          <a href="http://127.0.0.1:8000/schwing-stetter" class="mobile-link" style="font-size: 0.9rem; padding: 8px 10px; border-bottom: none;"><i class="fa-solid fa-cubes-stacked" style="font-size: 0.8rem;"></i> Schwing Stetter</a>
+          <a href="http://127.0.0.1:8000/ascenso-tyres" class="mobile-link" style="font-size: 0.9rem; padding: 8px 10px; border-bottom: none;"><i class="fa-solid fa-circle-dot" style="font-size: 0.8rem;"></i> Ascenso Tyres</a>
+          <a href="http://127.0.0.1:8000/eicher-trucks" class="mobile-link" style="font-size: 0.9rem; padding: 8px 10px; border-bottom: none;"><i class="fa-solid fa-truck-fast" style="font-size: 0.8rem;"></i> Eicher Trucks</a>
+        </div>
+      </div>
+      <a href="http://127.0.0.1:8000/gallery" class="mobile-link"><i class="fa-solid fa-images"></i> Gallery</a>
+      <a href="http://127.0.0.1:8000/clients" class="mobile-link"><i class="fa-solid fa-handshake"></i> Clients</a>
+      <a href="http://127.0.0.1:8000/careers" class="mobile-link"><i class="fa-solid fa-briefcase"></i> Careers</a>
+      <a href="http://127.0.0.1:8000/contact" class="mobile-link"><i class="fa-solid fa-headset"></i> Contact Us</a>
+          </div>
+      <div class="mobile-contact-info" style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.1); display: flex; flex-direction: column; gap: 1rem;">
+        <div style="color: rgba(255,255,255,0.8); font-size: 0.95rem; display: flex; align-items: flex-start; gap: 0.75rem;">
+          <i class="fa-solid fa-location-crosshairs" style="color: var(--accent); margin-top: 4px;"></i>
+          <a href="https://maps.google.com/?q=233+-+Ganesh+Nagar,+Bawadia+Kalan,+Ward+53,+Hoshangabad+Road,+Bhopal+-+462026" target="_blank" style="color: inherit; text-decoration: none;">Bawadia Kalan, Bhopal</a>
+        </div>
+        <div style="color: rgba(255,255,255,0.8); font-size: 0.95rem; display: flex; align-items: center; gap: 0.75rem;">
+          <i class="fa-solid fa-envelope-open-text" style="color: var(--accent);"></i>
+          <a href="mailto:info@marksmengroup.in" style="color: inherit; text-decoration: none;">info@marksmengroup.in</a>
+        </div>
+        <div style="color: rgba(255,255,255,0.8); font-size: 0.95rem; display: flex; align-items: center; gap: 0.75rem;">
+          <i class="fa-brands fa-square-whatsapp" style="color: #25D366; font-size: 1.15rem;"></i>
+          <span>
+            <a href="https://wa.me/919893911155" target="_blank" style="color: inherit; text-decoration: none;">+91 9893911155</a> / 
+            <a href="https://wa.me/919201987779" target="_blank" style="color: inherit; text-decoration: none;">+91 9201987779</a>
+          </span>
+        </div>
+      </div>
+      <div class="mobile-nav-cta">
+      <button class="btn btn-primary btn-enquire" style="width: 100%;"><i class="fa-solid fa-paper-plane" style="margin-right: 0.4rem;"></i> Enquire Now</button>
+    </div>
+  </div>
+  <div class="overlay"></div>
+    <main>
+
+          <!-- ASCENSO TYRES PRODUCT BANNER -->
+  <section class="ascenso-banner" style="position: relative; width: 100%; height: 450px; display: flex; align-items: center; overflow: hidden; background: var(--primary);">
+    <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;">
+      <img src="http://127.0.0.1:8000/frontend/assets/images/ascenso_banner.png" alt="Ascenso Tyres Banner" style="width: 100%; height: 100%; object-fit: cover; object-position: right center;">
+    </div>
+    <!-- Dark gradient overlay from left -->
+    <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(90deg, rgba(29, 42, 58, 0.95) 0%, rgba(29, 42, 58, 0.8) 40%, rgba(29, 42, 58, 0.2) 100%); z-index: 2;"></div>
+
+    <div class="container" style="position: relative; z-index: 3; padding: 0 1.5rem; max-width: 1200px;">
+      
+      <!-- Gold Pill Tag -->
+      <div style="display: inline-block; border: 1px solid var(--accent); background: rgba(203, 162, 51, 0.1); color: var(--accent); padding: 8px 16px; border-radius: 30px; font-weight: 700; font-size: 0.85rem; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 20px;">
+        <i class="fa-solid fa-layer-group" style="margin-right: 6px;"></i> Ascenso OTR & Off-Road Tyres
+      </div>
+
+      <h1 style="font-size: clamp(3rem, 5vw, 4rem); font-weight: 800; margin-bottom: 1rem; text-transform: none; letter-spacing: -0.5px; line-height: 1.1; color: white;">
+        Mining & Earthmoving <br><span style="color: var(--accent);">Premium Tyres</span>
+      </h1>
+      
+      <p style="font-size: 1.15rem; font-weight: 500; margin-bottom: 2rem; color: #e0e6ed; max-width: 600px; line-height: 1.6;">
+        Developed for the most demanding mining and earthmoving applications. Supplying state-of-the-art radial and bias tyres.
+      </p>
+      
+    </div>
+
+    <a href="http://127.0.0.1:8000/contact" style="position: absolute; right: 0; top: 50%; transform: translateY(-50%); background-color: var(--accent); color: var(--primary); padding: 15px 5px; writing-mode: vertical-rl; text-orientation: mixed; z-index: 4; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; font-size: 0.85rem; text-decoration: none;">ENQUIRY</a>
+  </section>
+
+  <!-- ASCENSO TYRES BUSINESS SECTION (From Brief) -->
+  <section class="section-padding" style="background-color: var(--bg-light);">
+    <div class="container">
+      <div class="section-header text-center">
+        <span class="section-tag">About Ascenso</span>
+        <h2 class="section-title">Authorized Ascenso Tyres <span>Distributor</span></h2>
+        <p class="section-subtitle">Marksmen Automobiles Pvt. Ltd. is an authorized distributor of Ascenso Tyres for Madhya Pradesh. Ascenso offers a wide range of tyres designed for demanding applications across agriculture, construction, earthmoving and off-road operations.</p>
+      </div>
+      
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-bottom: 3rem;">
+        
+        <div style="background: #fff; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-top: 4px solid var(--accent);">
+          <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--primary); margin-bottom: 1rem;"><i class="fa-solid fa-circle-dot" style="color: var(--accent); margin-right: 8px;"></i> Product Categories</h3>
+          <ul style="list-style: none; padding: 0; margin: 0; color: #555; display: flex; flex-direction: column; gap: 0.5rem;">
+            <li><i class="fa-solid fa-check" style="color: var(--accent); margin-right: 8px;"></i> Agricultural Tyres</li>
+            <li><i class="fa-solid fa-check" style="color: var(--accent); margin-right: 8px;"></i> OTR Tyres</li>
+            <li><i class="fa-solid fa-check" style="color: var(--accent); margin-right: 8px;"></i> Construction Tyres</li>
+            <li><i class="fa-solid fa-check" style="color: var(--accent); margin-right: 8px;"></i> Industrial Tyres</li>
+            <li><i class="fa-solid fa-check" style="color: var(--accent); margin-right: 8px;"></i> Earthmoving Tyres</li>
+            <li><i class="fa-solid fa-check" style="color: var(--accent); margin-right: 8px;"></i> Specialty Application Tyres</li>
+          </ul>
+        </div>
+        
+
+        <div style="background: #fff; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-top: 4px solid var(--accent);">
+          <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--primary); margin-bottom: 1rem;"><i class="fa-solid fa-headset" style="color: var(--accent); margin-right: 8px;"></i> Our Services</h3>
+          <ul style="list-style: none; padding: 0; margin: 0; color: #555; display: flex; flex-direction: column; gap: 0.5rem;">
+            <li><i class="fa-solid fa-check" style="color: var(--accent); margin-right: 8px;"></i> Product selection assistance</li>
+            <li><i class="fa-solid fa-check" style="color: var(--accent); margin-right: 8px;"></i> Tyre application guidance</li>
+            <li><i class="fa-solid fa-check" style="color: var(--accent); margin-right: 8px;"></i> Dealer and customer support</li>
+            <li><i class="fa-solid fa-check" style="color: var(--accent); margin-right: 8px;"></i> After-sales assistance & Replacement support</li>
+            <li><i class="fa-solid fa-check" style="color: var(--accent); margin-right: 8px;"></i> Technical guidance</li>
+          </ul>
+        </div>
+
+      </div>
+      
+      <div style="text-align: center; margin-bottom: 2rem;">
+        <h3 style="font-size: 1.35rem; font-weight: 800; color: var(--primary); margin-bottom: 0.5rem;">Key USP & Territory</h3>
+        <p style="font-size: 1.1rem; color: #555; max-width: 800px; margin: 0 auto;">Application-focused tyre solutions for demanding Indian operating conditions.<br><strong>Authorized Distributor – Madhya Pradesh</strong></p>
+      </div>
+
+      <div style="display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;">
+        <span class="btn btn-primary" style="cursor: default;">Explore Ascenso Tyres</span>
+        <a href="#star-products" class="btn btn-secondary">Find the Right Tyre</a>
+        <a href="http://127.0.0.1:8000/contact" class="btn btn-outline">Enquire Now</a>
+      </div>
+    </div>
+  </section>
+
+<section style="background-color: #fff; margin-bottom: 20px; padding: 60px 0;">
+  <div id="vtab-parent-container" class="container" style="max-width: 1300px; margin: 0 auto; padding: 0 20px; display: flex; justify-content: space-between; align-items: stretch; min-height: 500px; flex-wrap: wrap;">
+    
+    <!-- Left Content (Image & Text) -->
+    <div id="vtab-content-container" style="flex: 0 0 45%; max-width: 550px; display: flex; flex-direction: column; justify-content: flex-start; transition: opacity 0.3s ease;">
+      <img id="vtab-img" src="http://127.0.0.1:8000/frontend/assets/images/ascenso_product.png" style="width: 100%; height: 350px; object-fit: cover; border-radius: 12px; margin-bottom: 30px;">
+      <h2 id="vtab-title" style="color: #f15a22; font-size: 1.4rem; font-weight: 700; text-transform: uppercase; margin-bottom: 20px; line-height: 1.3;">WE NEVER STOPPED RISING: THE ASCENSO STORY.</h2>
+      <p id="vtab-text" style="color: #4a4a4a; font-size: 1rem; line-height: 1.7; margin-bottom: 30px;">After building two global giants in the off-highway tyre segment, the illustrious Mahansaria family created Ascenso, its third off-highway tyre manufacturing brand.</p>
+
+    </div>
+
+    <!-- Right Tabs (Lines & Rotated Text) -->
+    <div id="vtab-tabs-container" style="flex: 0 0 45%; display: flex; justify-content: space-between; margin-left: 50px;">
+      <!-- JavaScript will inject tabs here -->
+    </div>
+
+  </div>
+</section>
+
+<!-- ORANGE STATS BANNER -->
+  <section style="background-color: #f15a22; color: #1a1a1a; padding: 20px 0; margin-bottom: 20px;">
+    <div class="container" style="max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-around; align-items: center; flex-wrap: wrap; gap: 20px;">
+      
+      <div style="display: flex; align-items: center; gap: 20px;">
+        <i class="fa-solid fa-users" style="font-size: 3rem;"></i>
+        <div>
+          <div style="font-size: 2.2rem; font-weight: 800; line-height: 1.1;">2500+</div>
+          <div style="font-size: 1.1rem; font-weight: 600;">Workforce</div>
+        </div>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 20px;">
+        <i class="fa-solid fa-earth-americas" style="font-size: 3rem;"></i>
+        <div>
+          <div style="font-size: 2.2rem; font-weight: 800; line-height: 1.1;">100+</div>
+          <div style="font-size: 1.1rem; font-weight: 600;">Countries</div>
+        </div>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 20px;">
+        <i class="fa-solid fa-chart-line" style="font-size: 3rem;"></i>
+        <div>
+          <div style="font-size: 2.2rem; font-weight: 800; line-height: 1.1;">1000+</div>
+          <div style="font-size: 1.1rem; font-weight: 600;">SKUs</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ACCORDION SLIDER SECTION -->
+  <section style="padding: 20px 0; margin-bottom: 20px; background-color: #fff;">
+    <div class="container ascenso-slider-wrap">
+      
+      <!-- Left Content -->
+      <div class="ascenso-slider-l">
+        <h2 style="color: #f15a22; font-size: 2.2rem; font-weight: 700; margin-bottom: 25px; line-height: 1.2; text-transform: uppercase;">MANY TYRES. ONE ASCENSO.</h2>
+        <p style="color: #4a4a4a; font-size: 1.1rem; line-height: 1.6; margin-bottom: 30px; padding-right: 20px;">
+          We manufacture over 1000+ SKUs across the agricultural, forestry, industrial and construction, material handling and earth mover segments.
+        </p>
+
+      </div>
+
+      <!-- Right Accordion -->
+      <div class="ascenso-slider-r" id="ascenso-accordion">
+        
+        <!-- Panel 1 -->
+        <div class="acc-panel active" style="position: relative; border-radius: 12px; overflow: hidden; cursor: pointer; transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1); flex: 1; min-width: 45px;">
+          <img src="http://127.0.0.1:8000/frontend/assets/images/ascenso_banner.png" alt="Agriculture" style="width: 100%; height: 100%; object-fit: cover;">
+          <div class="acc-overlay" style="position: absolute; inset: 0; background: linear-gradient(to top, rgba(200, 60, 20, 0.85) 0%, transparent 60%); transition: background 0.5s;"></div>
+          <div class="acc-title-vertical" style="position: absolute; bottom: 0; left: 0; width: 100%; height: 100%; writing-mode: vertical-rl; transform: rotate(180deg); display: flex; justify-content: flex-end; align-items: center; padding-bottom: 30px; color: #fff; font-weight: 700; font-size: 1.3rem; transition: opacity 0.3s; opacity: 0; white-space: nowrap;">Agriculture</div>
+          <div class="acc-title-horizontal" style="position: absolute; bottom: 30px; left: 0; width: 100%; text-align: center; color: #fff; font-weight: 700; font-size: 1.5rem; transition: opacity 0.3s; opacity: 1;">Agriculture</div>
+        </div>
+
+        <!-- Panel 2 -->
+        <div class="acc-panel" style="position: relative; border-radius: 12px; overflow: hidden; cursor: pointer; transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1); flex: 0 0 50px; min-width: 45px;">
+          <img src="http://127.0.0.1:8000/frontend/assets/images/ascenso_product.png" alt="Industrial & Construction" style="width: 100%; height: 100%; object-fit: cover; background: #e0e0e0;">
+          <div class="acc-overlay" style="position: absolute; inset: 0; background: rgba(0,0,0,0.5); transition: background 0.5s;"></div>
+          <div class="acc-title-vertical" style="position: absolute; bottom: 0; left: 0; width: 100%; height: 100%; writing-mode: vertical-rl; transform: rotate(180deg); display: flex; justify-content: flex-end; align-items: center; padding-bottom: 30px; color: #fff; font-weight: 700; font-size: 1.3rem; transition: opacity 0.3s; opacity: 1; white-space: nowrap;">Industrial & Construction</div>
+          <div class="acc-title-horizontal" style="position: absolute; bottom: 30px; left: 0; width: 100%; text-align: center; color: #fff; font-weight: 700; font-size: 1.5rem; transition: opacity 0.3s; opacity: 0;">Industrial & Construction</div>
+        </div>
+        
+        <!-- Panel 3 -->
+        <div class="acc-panel" style="position: relative; border-radius: 12px; overflow: hidden; cursor: pointer; transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1); flex: 0 0 50px; min-width: 45px;">
+          <img src="https://magnatyres.com/wp-content/uploads/2024/03/mr400-350x350.png.webp" alt="Material Handling" style="width: 100%; height: 100%; object-fit: cover; background: #d0d0d0;">
+          <div class="acc-overlay" style="position: absolute; inset: 0; background: rgba(0,0,0,0.5); transition: background 0.5s;"></div>
+          <div class="acc-title-vertical" style="position: absolute; bottom: 0; left: 0; width: 100%; height: 100%; writing-mode: vertical-rl; transform: rotate(180deg); display: flex; justify-content: flex-end; align-items: center; padding-bottom: 30px; color: #fff; font-weight: 700; font-size: 1.3rem; transition: opacity 0.3s; opacity: 1; white-space: nowrap;">Material Handling</div>
+          <div class="acc-title-horizontal" style="position: absolute; bottom: 30px; left: 0; width: 100%; text-align: center; color: #fff; font-weight: 700; font-size: 1.5rem; transition: opacity 0.3s; opacity: 0;">Material Handling</div>
+        </div>
+
+        <!-- Panel 4 -->
+        <div class="acc-panel" style="position: relative; border-radius: 12px; overflow: hidden; cursor: pointer; transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1); flex: 0 0 50px; min-width: 45px;">
+          <img src="https://magnatyres.com/wp-content/uploads/2024/03/mb720-350x350.png.webp" alt="Earth Mover" style="width: 100%; height: 100%; object-fit: cover; background: #e0e0e0;">
+          <div class="acc-overlay" style="position: absolute; inset: 0; background: rgba(0,0,0,0.5); transition: background 0.5s;"></div>
+          <div class="acc-title-vertical" style="position: absolute; bottom: 0; left: 0; width: 100%; height: 100%; writing-mode: vertical-rl; transform: rotate(180deg); display: flex; justify-content: flex-end; align-items: center; padding-bottom: 30px; color: #fff; font-weight: 700; font-size: 1.3rem; transition: opacity 0.3s; opacity: 1; white-space: nowrap;">Earth Mover</div>
+          <div class="acc-title-horizontal" style="position: absolute; bottom: 30px; left: 0; width: 100%; text-align: center; color: #fff; font-weight: 700; font-size: 1.5rem; transition: opacity 0.3s; opacity: 0;">Earth Mover</div>
+        </div>
+
+        <!-- Panel 5 -->
+        <div class="acc-panel" style="position: relative; border-radius: 12px; overflow: hidden; cursor: pointer; transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1); flex: 0 0 50px; min-width: 45px;">
+          <img src="https://magnatyres.com/wp-content/uploads/2024/03/m-skid4-350x350.png.webp" alt="Forestry" style="width: 100%; height: 100%; object-fit: cover; background: #d0d0d0;">
+          <div class="acc-overlay" style="position: absolute; inset: 0; background: rgba(0,0,0,0.5); transition: background 0.5s;"></div>
+          <div class="acc-title-vertical" style="position: absolute; bottom: 0; left: 0; width: 100%; height: 100%; writing-mode: vertical-rl; transform: rotate(180deg); display: flex; justify-content: flex-end; align-items: center; padding-bottom: 30px; color: #fff; font-weight: 700; font-size: 1.3rem; transition: opacity 0.3s; opacity: 1; white-space: nowrap;">Forestry</div>
+          <div class="acc-title-horizontal" style="position: absolute; bottom: 30px; left: 0; width: 100%; text-align: center; color: #fff; font-weight: 700; font-size: 1.5rem; transition: opacity 0.3s; opacity: 0;">Forestry</div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- PRODUCT SLIDER SECTION -->
+  <section id="star-products" style="padding: 20px 0; margin-bottom: 20px; background-color: #fff; overflow: hidden;">
+    <div class="container" style="max-width: 1300px; margin: 0 auto; padding: 0 20px;">
+      
+      <div style="margin-bottom: 40px;">
+        <h2 style="color: #f15a22; font-size: 1.8rem; font-weight: 700; margin-bottom: 15px; line-height: 1.2; text-transform: uppercase;">THE ASCENSO ACHIEVERS: AN ODE TO OUR STAR PRODUCTS.</h2>
+        <p style="color: #4a4a4a; font-size: 1.1rem;">Built for the bold, our star products are the silent heroes driving machines and redefining industries.</p>
+      </div>
+
+      <!-- Slider Wrapper -->
+      <div style="position: relative;">
+        
+        <div id="ascenso-product-track" style="display: flex; gap: 25px; transition: transform 0.5s ease; width: 100%;">
+                    <div class="achiever-card" style="flex: 0 0 calc(25% - 18.75px); min-width: 250px; background: #fff; border: 1px solid #f15a22; border-radius: 8px; padding: 25px 25px 30px; position: relative; transition: box-shadow 0.3s;">
+            <div style="position: absolute; top: -1px; left: -1px; background: #f15a22; color: #fff; padding: 4px 15px; border-radius: 8px 0 8px 0; font-size: 0.8rem; font-weight: 700;">New</div>
+            <img src="http://127.0.0.1:8000/storage/products/ifCMZCqml8wXxuCniYLYiak4Ab92tQVTvyf6V4tj.webp" alt="EXV 400" style="width: 100%; height: 220px; object-fit: contain; margin-bottom: 20px; transition: transform 0.3s;" class="ach-img">
+            <h3 style="font-size: 1.4rem; color: #333; margin-bottom: 5px; font-weight: 800;">EXV 400</h3>
+                        <div style="color: #f15a22; font-size: 0.9rem; font-weight: 500; margin-bottom: 12px;">Bias | E-3 | TL</div>
+                        <p style="color: #666; font-size: 0.9rem; line-height: 1.5; margin-bottom: 0;">Tyre for Earthmovers | Specialized for rocky terrain...</p>
+          </div>
+                    <div class="achiever-card" style="flex: 0 0 calc(25% - 18.75px); min-width: 250px; background: #fff; border: 1px solid #f15a22; border-radius: 8px; padding: 25px 25px 30px; position: relative; transition: box-shadow 0.3s;">
+            <div style="position: absolute; top: -1px; left: -1px; background: #f15a22; color: #fff; padding: 4px 15px; border-radius: 8px 0 8px 0; font-size: 0.8rem; font-weight: 700;">New</div>
+            <img src="http://127.0.0.1:8000/storage/products/RHk3o275hoiCXnI105z93r94vyTCBJaBdSu2qjY9.png" alt="IMB 161" style="width: 100%; height: 220px; object-fit: contain; margin-bottom: 20px; transition: transform 0.3s;" class="ach-img">
+            <h3 style="font-size: 1.4rem; color: #333; margin-bottom: 5px; font-weight: 800;">IMB 161</h3>
+                        <div style="color: #f15a22; font-size: 0.9rem; font-weight: 500; margin-bottom: 12px;">Bias | I-2 | TL</div>
+                        <p style="color: #666; font-size: 0.9rem; line-height: 1.5; margin-bottom: 0;">Tyre for Implement | Highly durable design for...</p>
+          </div>
+                    <div class="achiever-card" style="flex: 0 0 calc(25% - 18.75px); min-width: 250px; background: #fff; border: 1px solid #f15a22; border-radius: 8px; padding: 25px 25px 30px; position: relative; transition: box-shadow 0.3s;">
+            <div style="position: absolute; top: -1px; left: -1px; background: #f15a22; color: #fff; padding: 4px 15px; border-radius: 8px 0 8px 0; font-size: 0.8rem; font-weight: 700;">New</div>
+            <img src="http://127.0.0.1:8000/storage/products/diACAbWUnqBGK6zNcOhO92XmWAsFSnqKYBKu9b9X.webp" alt="VDR 2000" style="width: 100%; height: 220px; object-fit: contain; margin-bottom: 20px; transition: transform 0.3s;" class="ach-img">
+            <h3 style="font-size: 1.4rem; color: #333; margin-bottom: 5px; font-weight: 800;">VDR 2000</h3>
+                        <div style="color: #f15a22; font-size: 0.9rem; font-weight: 500; margin-bottom: 12px;">Radial | R-1W | TL</div>
+                        <p style="color: #666; font-size: 0.9rem; line-height: 1.5; margin-bottom: 0;">Tyre for Agriculture | High traction pattern</p>
+          </div>
+                    <div class="achiever-card" style="flex: 0 0 calc(25% - 18.75px); min-width: 250px; background: #fff; border: 1px solid #f15a22; border-radius: 8px; padding: 25px 25px 30px; position: relative; transition: box-shadow 0.3s;">
+            <div style="position: absolute; top: -1px; left: -1px; background: #f15a22; color: #fff; padding: 4px 15px; border-radius: 8px 0 8px 0; font-size: 0.8rem; font-weight: 700;">New</div>
+            <img src="http://127.0.0.1:8000/storage/products/r2kbtkQGfaalb8ZLDxBsNo6DpZfRFA9GVLp805qh.webp" alt="VDR 900" style="width: 100%; height: 220px; object-fit: contain; margin-bottom: 20px; transition: transform 0.3s;" class="ach-img">
+            <h3 style="font-size: 1.4rem; color: #333; margin-bottom: 5px; font-weight: 800;">VDR 900</h3>
+                        <div style="color: #f15a22; font-size: 0.9rem; font-weight: 500; margin-bottom: 12px;">Radial | R-1W | TL</div>
+                        <p style="color: #666; font-size: 0.9rem; line-height: 1.5; margin-bottom: 0;">Tyre for Agriculture | VF Drive Radial 900, specially desi.....</p>
+          </div>
+                    <div class="achiever-card" style="flex: 0 0 calc(25% - 18.75px); min-width: 250px; background: #fff; border: 1px solid #f15a22; border-radius: 8px; padding: 25px 25px 30px; position: relative; transition: box-shadow 0.3s;">
+            <div style="position: absolute; top: -1px; left: -1px; background: #f15a22; color: #fff; padding: 4px 15px; border-radius: 8px 0 8px 0; font-size: 0.8rem; font-weight: 700;">New</div>
+            <img src="http://127.0.0.1:8000/storage/products/2EPyC79CdS9hUQse902R8MvArClOwW7KAUgztJao.webp" alt="FLS 692" style="width: 100%; height: 220px; object-fit: contain; margin-bottom: 20px; transition: transform 0.3s;" class="ach-img">
+            <h3 style="font-size: 1.4rem; color: #333; margin-bottom: 5px; font-weight: 800;">FLS 692</h3>
+                        <div style="color: #f15a22; font-size: 0.9rem; font-weight: 500; margin-bottom: 12px;">Solid</div>
+                        <p style="color: #666; font-size: 0.9rem; line-height: 1.5; margin-bottom: 0;">Tyre for Material Handling | Forklift Solid FLS 692- Deli...</p>
+          </div>
+                    <div class="achiever-card" style="flex: 0 0 calc(25% - 18.75px); min-width: 250px; background: #fff; border: 1px solid #f15a22; border-radius: 8px; padding: 25px 25px 30px; position: relative; transition: box-shadow 0.3s;">
+            <div style="position: absolute; top: -1px; left: -1px; background: #f15a22; color: #fff; padding: 4px 15px; border-radius: 8px 0 8px 0; font-size: 0.8rem; font-weight: 700;">New</div>
+            <img src="http://127.0.0.1:8000/storage/products/mnH06CpJtMvNCVlxNXjDYiFNFwCotxRxmVPzwG5n.jpg" alt="FFB 842" style="width: 100%; height: 220px; object-fit: contain; margin-bottom: 20px; transition: transform 0.3s;" class="ach-img">
+            <h3 style="font-size: 1.4rem; color: #333; margin-bottom: 5px; font-weight: 800;">FFB 842</h3>
+                        <div style="color: #f15a22; font-size: 0.9rem; font-weight: 500; margin-bottom: 12px;">Bias | LS-2 | TL</div>
+                        <p style="color: #666; font-size: 0.9rem; line-height: 1.5; margin-bottom: 0;">Tyre for Forestry | Forestry forwarder Bias 842 which is...</p>
+          </div>
+                  </div>
+
+        <!-- Slider Controls / Scrollbar -->
+        <div style="margin-top: 50px; display: flex; align-items: center; justify-content: space-between; gap: 20px;">
+          
+          <button id="achvr-prev" style="width: 40px; height: 40px; border-radius: 50%; border: 1px solid #ccc; background: #e0e0e0; color: #999; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0;"><i class="fa-solid fa-chevron-left"></i></button>
+          
+          <div style="flex-grow: 1; height: 3px; background: #e0e0e0; position: relative;">
+            <div id="achvr-progress" style="position: absolute; top: 0; left: 0; height: 100%; width: 25%; background: #f15a22; transition: all 0.3s ease;"></div>
+          </div>
+
+          <button id="achvr-next" style="width: 40px; height: 40px; border-radius: 50%; border: 1px solid #f15a22; background: #fff; color: #f15a22; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0;"><i class="fa-solid fa-chevron-right"></i></button>
+          
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS SECTION -->
+<section style="background-color: #fff; margin-bottom: 20px; padding: 20px 0;">
+  <div class="container" style="max-width: 1300px; margin: 0 auto; padding: 0 20px; position: relative;">
+    
+    <!-- Top Controls -->
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 40px; gap: 15px;">
+        <button id="testim-prev" style="width: 35px; height: 35px; border-radius: 50%; border: 1px solid #f15a22; background: #fff; color: #f15a22; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0;"><i class="fa-solid fa-chevron-left"></i></button>
+        <div style="flex: 1; height: 2px; background: #e0e0e0; position: relative;">
+            <div id="testim-progress" style="position: absolute; top: 0; left: 0; width: 33.33%; height: 100%; background: #f15a22; transition: all 0.3s ease;"></div>
+        </div>
+        <button id="testim-next" style="width: 35px; height: 35px; border-radius: 50%; border: 1px solid #f15a22; background: #fff; color: #f15a22; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0;"><i class="fa-solid fa-chevron-right"></i></button>
+    </div>
+
+    <div style="overflow: hidden; width: 100%;">
+      <div id="ascenso-testim-track" style="display: flex; flex-wrap: nowrap; gap: 40px; transition: transform 0.5s ease; width: 100%;">
+        
+        <!-- Card 1 -->
+        <div class="testim-card" style="flex: 0 0 calc(50% - 20px); min-width: 400px; display: flex; align-items: center; justify-content: space-between; gap: 30px;">
+          <div style="flex: 1; padding-right: 20px;">
+            <p style="color: #4a4a4a; font-size: 1.15rem; line-height: 1.7; margin-bottom: 40px;">"We've been in some pretty tough conditions with them and haven't seen much damage, so we've been really pleased with the tyres so far."</p>
+            <h4 style="color: #f15a22; font-size: 1.15rem; font-weight: 700; margin-bottom: 25px;">John D Unruh (Peabody, Kansas)</h4>
+          </div>
+          <div style="flex: 1; position: relative;">
+            <div style="border: 5px solid #1a1a1a; border-radius: 12px; padding: 15px; background: #fff;">
+                <div style="border: 1px solid #f15a22; display: flex; flex-direction: column; align-items: center; padding: 15px 15px 0;">
+                    <div style="color: #f15a22; font-weight: 900; font-size: 1.2rem; font-style: italic; margin-bottom: 10px;">
+                        <i class="fa-solid fa-angle-up" style="font-size: 0.8rem;"></i><i class="fa-solid fa-angle-up" style="font-size: 0.8rem;"></i> ASCENSO
+                    </div>
+                    <img src="http://127.0.0.1:8000/frontend/assets/images/ascenso_product.png" alt="Testimonial 1" style="width: 100%; height: 320px; object-fit: cover; display: block; margin-bottom: -1px;">
+                </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="testim-card" style="flex: 0 0 calc(50% - 20px); min-width: 400px; display: flex; align-items: center; justify-content: space-between; gap: 30px;">
+          <div style="flex: 1; padding-right: 20px;">
+            <p style="color: #4a4a4a; font-size: 1.15rem; line-height: 1.7; margin-bottom: 40px;">"For the three-month trial that we've had these, I've definitely noticed the difference in smoothness. It doesn't hop as much as I'd expect an R1 to hop. All in all, I like the tyres a lot."</p>
+            <h4 style="color: #f15a22; font-size: 1.15rem; font-weight: 700; margin-bottom: 25px;">The MDR 1000</h4>
+          </div>
+          <div style="flex: 1; position: relative;">
+            <div style="border: 5px solid #1a1a1a; border-radius: 12px; padding: 15px; background: #fff;">
+                <div style="border: 1px solid #f15a22; display: flex; flex-direction: column; align-items: center; padding: 15px 15px 0;">
+                    <div style="color: #f15a22; font-weight: 900; font-size: 1.2rem; font-style: italic; margin-bottom: 10px;">
+                        <i class="fa-solid fa-angle-up" style="font-size: 0.8rem;"></i><i class="fa-solid fa-angle-up" style="font-size: 0.8rem;"></i> ASCENSO
+                    </div>
+                    <img src="http://127.0.0.1:8000/frontend/assets/images/ascenso_product.jpg" alt="Testimonial 2" style="width: 100%; height: 320px; object-fit: cover; display: block; margin-bottom: -1px;">
+                </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="testim-card" style="flex: 0 0 calc(50% - 20px); min-width: 400px; display: flex; align-items: center; justify-content: space-between; gap: 30px;">
+          <div style="flex: 1; padding-right: 20px;">
+            <p style="color: #4a4a4a; font-size: 1.15rem; line-height: 1.7; margin-bottom: 40px;">"Excellent traction and reliability in our field operations. Ascenso has truly delivered a game-changer for our daily requirements."</p>
+            <h4 style="color: #f15a22; font-size: 1.15rem; font-weight: 700; margin-bottom: 25px;">Sarah Jenkins (Ohio)</h4>
+          </div>
+          <div style="flex: 1; position: relative;">
+            <div style="border: 5px solid #1a1a1a; border-radius: 12px; padding: 15px; background: #fff;">
+                <div style="border: 1px solid #f15a22; display: flex; flex-direction: column; align-items: center; padding: 15px 15px 0;">
+                    <div style="color: #f15a22; font-weight: 900; font-size: 1.2rem; font-style: italic; margin-bottom: 10px;">
+                        <i class="fa-solid fa-angle-up" style="font-size: 0.8rem;"></i><i class="fa-solid fa-angle-up" style="font-size: 0.8rem;"></i> ASCENSO
+                    </div>
+                    <img src="http://127.0.0.1:8000/frontend/assets/images/ascenso_product.png" alt="Testimonial 3" style="width: 100%; height: 320px; object-fit: cover; display: block; margin-bottom: -1px;">
+                </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INSTAGRAM SECTION -->
+  <section style="background-color: #f15a22; padding: 30px 0; margin-bottom: 20px;">
+    <div class="container" style="max-width: 1300px; margin: 0 auto; padding: 0 20px;">
+      
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+        <h2 style="color: #222; font-size: 1.4rem; font-weight: 800; text-transform: uppercase;">FOLLOW US ON INSTAGRAM</h2>
+        
+      </div>
+
+      <div style="overflow: hidden; width: 100%;"><div id="insta-track" style="display: flex; flex-wrap: nowrap; gap: 20px; transition: transform 0.5s ease; width: 100%;">        <!-- Insta 1 -->
+        <div style="flex: 1; border-radius: 12px; overflow: hidden; border: 3px solid #fff; aspect-ratio: 1.2/1; position: relative;">
+          <img src="http://127.0.0.1:8000/frontend/assets/images/ascenso_product.png" style="width: 100%; height: 100%; object-fit: cover; background: #222;">
+        </div>
+
+        <!-- Insta 2 -->
+        <div style="flex: 1; border-radius: 12px; overflow: hidden; border: 3px solid #fff; aspect-ratio: 1.2/1; position: relative;">
+          <img src="http://127.0.0.1:8000/frontend/assets/images/ascenso_product.png" style="width: 100%; height: 100%; object-fit: cover;">
+        </div>
+
+        <!-- Insta 3 -->
+        <div style="flex: 1; border-radius: 12px; overflow: hidden; border: 3px solid #fff; aspect-ratio: 1.2/1; position: relative; background: #fff;">
+          <div style="text-align: center; padding: 20px 0; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+             <div style="color: #f15a22; font-weight: 900; font-size: 1.2rem; font-style: italic; margin-bottom: 5px;"><i class="fa-solid fa-angle-up" style="font-size: 0.9rem;"></i><i class="fa-solid fa-angle-up" style="font-size: 0.9rem;"></i> ASCENSO</div>
+             <div style="font-weight: 700; font-size: 1rem; color: #333; margin-bottom: 10px;">shining at</div>
+             <div style="width: 80px; height: 80px; border-radius: 50%; background: #e0ca9e; border: 2px solid #c5a365; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 800; color: #725a2d; text-align: center;">AGRISHOW</div>
+          </div>
+        </div>
+
+        <!-- Insta 4 -->
+        <div style="flex: 1; border-radius: 12px; overflow: hidden; border: 3px solid #fff; aspect-ratio: 1.2/1; position: relative;">
+          <img src="http://127.0.0.1:8000/frontend/assets/images/ascenso_product.jpg" style="width: 100%; height: 100%; object-fit: cover;">
+          <div style="position: absolute; top: 10px; right: 10px; font-size: 2.5rem; font-weight: 900; color: #f15a22; line-height: 1; text-shadow: 2px 2px 0 #fff;">1 DAY<br><span style="font-size: 1rem; color: #fff; text-shadow: none;">TO GO</span></div>
+        </div>
+
+      </div>
+
+      <div style="text-align: center; margin-top: 25px; display: flex; justify-content: center; gap: 12px; align-items: center;">
+        <div style="width: 18px; height: 18px; border-radius: 50%; border: 2px solid #222; display: flex; align-items: center; justify-content: center;">
+            <div style="width: 8px; height: 8px; border-radius: 50%; background: #222;"></div>
+        </div>
+        <div style="width: 8px; height: 8px; border-radius: 50%; background: #222;"></div>
+        <div style="width: 8px; height: 8px; border-radius: 50%; background: #222;"></div>
+        <div style="width: 8px; height: 8px; border-radius: 50%; background: #222;"></div>
+      </div>
+
+    </div>
+  </section>
+
+    <!-- LATEST AT ASCENSO SECTION -->
+  <section style="background-color: #fff; margin-bottom: 40px; padding: 20px 0;">
+    <div class="container" style="max-width: 1300px; margin: 0 auto; padding: 0 20px;">
+      
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; flex-wrap: wrap; gap: 20px;">
+        <h2 style="color: #f15a22; font-size: 1.5rem; font-weight: 800; text-transform: uppercase;">LATEST AT ASCENSO</h2>
+        
+        <div style="display: flex; gap: 10px;">
+          <button id="btn-tab-news" class="ascenso-tab" style="padding: 8px 25px; border: 1px solid #f15a22; background: #fff; color: #f15a22; transition: all 0.3s; font-weight: 600; border-radius: 4px; cursor: pointer; font-size: 0.9rem;">News</button>
+          <button id="btn-tab-events" class="ascenso-tab" style="padding: 8px 25px; border: 1px solid #f15a22; background: #fff; color: #f15a22; transition: all 0.3s; font-weight: 600; border-radius: 4px; cursor: pointer; font-size: 0.9rem;">Events</button>
+          <button id="btn-tab-exhibitions" class="ascenso-tab active" style="padding: 8px 25px; border: 1px solid #f15a22; background: #f15a22; color: #fff; transition: all 0.3s; font-weight: 600; border-radius: 4px; cursor: pointer; font-size: 0.9rem;">Exhibitions</button>
+        </div>
+      </div>
+
+      <div id="tab-content-news" class="ascenso-tab-content" style="display: none; gap: 20px;">
+        <div style="flex: 1 1 0; min-width: 200px; border: 1px solid #f15a22; border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; cursor: pointer;">
+          <img src="http://127.0.0.1:8000/frontend/assets/images/ascenso_product.png" style="width: 100%; height: 200px; object-fit: cover;">
+          <div style="padding: 20px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; background: #fff;">
+            <h3 style="font-size: 1.1rem; color: #333; font-weight: 700; margin-bottom: 15px;">New Product Launch</h3>
+
+          </div>
+        </div>
+        <div style="flex: 1 1 0; min-width: 200px; border: 1px solid #f15a22; border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; cursor: pointer;">
+          <img src="http://127.0.0.1:8000/frontend/assets/images/ascenso_product.png" style="width: 100%; height: 200px; object-fit: cover;">
+          <div style="padding: 20px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; background: #fff;">
+            <h3 style="font-size: 1.1rem; color: #333; font-weight: 700; margin-bottom: 15px;">Global Market Expansion</h3>
+
+          </div>
+        </div>
+        <div style="flex: 1 1 0; min-width: 200px; border: 1px solid #f15a22; border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; cursor: pointer;">
+          <img src="http://127.0.0.1:8000/frontend/assets/images/ascenso_product.png" style="width: 100%; height: 200px; object-fit: cover;">
+          <div style="padding: 20px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; background: #fff;">
+            <h3 style="font-size: 1.1rem; color: #333; font-weight: 700; margin-bottom: 15px;">Awards and Recognitions</h3>
+
+          </div>
+        </div>
+        <div style="flex: 1 1 0; min-width: 200px; border: 1px solid #f15a22; border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; cursor: pointer;">
+          <img src="http://127.0.0.1:8000/frontend/assets/images/ascenso_product.jpg" style="width: 100%; height: 200px; object-fit: cover;">
+          <div style="padding: 20px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; background: #fff;">
+            <h3 style="font-size: 1.1rem; color: #333; font-weight: 700; margin-bottom: 15px;">Sustainability Initiatives</h3>
+
+          </div>
+        </div>
+      </div>
+
+      <div id="tab-content-events" class="ascenso-tab-content" style="display: none; gap: 20px;">
+        <div style="flex: 1 1 0; min-width: 200px; border: 1px solid #f15a22; border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; cursor: pointer;">
+          <img src="http://127.0.0.1:8000/frontend/assets/images/ascenso_product.jpg" style="width: 100%; height: 200px; object-fit: cover;">
+          <div style="padding: 20px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; background: #fff;">
+            <h3 style="font-size: 1.1rem; color: #333; font-weight: 700; margin-bottom: 15px;">Annual Dealer Meet</h3>
+
+          </div>
+        </div>
+        <div style="flex: 1 1 0; min-width: 200px; border: 1px solid #f15a22; border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; cursor: pointer;">
+          <img src="http://127.0.0.1:8000/frontend/assets/images/ascenso_product.png" style="width: 100%; height: 200px; object-fit: cover;">
+          <div style="padding: 20px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; background: #fff;">
+            <h3 style="font-size: 1.1rem; color: #333; font-weight: 700; margin-bottom: 15px;">Factory Tour 2026</h3>
+
+          </div>
+        </div>
+        <div style="flex: 1 1 0; min-width: 200px; border: 1px solid #f15a22; border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; cursor: pointer;">
+          <img src="http://127.0.0.1:8000/frontend/assets/images/ascenso_product.jpg" style="width: 100%; height: 200px; object-fit: cover;">
+          <div style="padding: 20px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; background: #fff;">
+            <h3 style="font-size: 1.1rem; color: #333; font-weight: 700; margin-bottom: 15px;">Tyre Care Workshop</h3>
+
+          </div>
+        </div>
+        <div style="flex: 1 1 0; min-width: 200px; background: transparent;"></div>
+      </div>
+
+      <div id="tab-content-exhibitions" class="ascenso-tab-content" style="display: flex; gap: 20px;">
+        <div style="flex: 1 1 0; min-width: 200px; border: 1px solid #f15a22; border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; cursor: pointer;">
+          <img src="http://127.0.0.1:8000/frontend/assets/images/ascenso_product.png" style="width: 100%; height: 200px; object-fit: cover;">
+          <div style="padding: 20px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; background: #fff;">
+            <h3 style="font-size: 1.1rem; color: #333; font-weight: 700; margin-bottom: 15px;">Automechanika Dubai</h3>
+
+          </div>
+        </div>
+        <div style="flex: 1 1 0; min-width: 200px; border: 1px solid #f15a22; border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; cursor: pointer;">
+          <img src="http://127.0.0.1:8000/frontend/assets/images/ascenso_product.png" style="width: 100%; height: 200px; object-fit: cover;">
+          <div style="padding: 20px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; background: #fff;">
+            <h3 style="font-size: 1.1rem; color: #333; font-weight: 700; margin-bottom: 15px;">LAMMA</h3>
+
+          </div>
+        </div>
+        <div style="flex: 1 1 0; min-width: 200px; border: 1px solid #f15a22; border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; cursor: pointer;">
+          <img src="http://127.0.0.1:8000/frontend/assets/images/ascenso_product.png" style="width: 100%; height: 200px; object-fit: cover;">
+          <div style="padding: 20px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; background: #fff;">
+            <h3 style="font-size: 1.1rem; color: #333; font-weight: 700; margin-bottom: 15px;">Krishi darshan Expo</h3>
+
+          </div>
+        </div>
+        <div style="flex: 1 1 0; min-width: 200px; border: 1px solid #f15a22; border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; cursor: pointer;">
+          <img src="http://127.0.0.1:8000/frontend/assets/images/ascenso_product.jpg" style="width: 100%; height: 200px; object-fit: cover;">
+          <div style="padding: 20px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; background: #fff;">
+            <h3 style="font-size: 1.1rem; color: #333; font-weight: 700; margin-bottom: 15px;">Krishi darshan Expo</h3>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+    </main>
+
+
+
+    <footer class="enterprise-footer">
+
+    <div class="container footer-grid">
+
+        <!-- ================= FOOTER ABOUT ================= -->
+        <div class="footer-col footer-about">
+
+            <a href="http://127.0.0.1:8000" class="logo-container footer-logo">
+
+                <img src="http://127.0.0.1:8000/frontend/assets/images/logo.png"
+                     alt="Marksmen Group Logo"
+                     class="brand-logo-img">
+
+            </a>
+
+            <p>
+                A professionally governed, rapidly expanding infrastructure
+                solutions group delivering high-end machinery and commercial
+                mobility solutions across Central India.
+            </p>
+
+        </div>
+
+
+        <!-- ================= QUICK LINKS ================= -->
+        <div class="footer-col">
+
+            <h3>Quick Links</h3>
+
+            <ul class="footer-links-list">
+
+                <li>
+                    <a href="http://127.0.0.1:8000">Home</a>
+                </li>
+
+                <li>
+                    <a href="http://127.0.0.1:8000/about">About Us</a>
+                </li>
+
+                <li>
+                    <a href="http://127.0.0.1:8000/services">Products &amp; Services</a>
+                </li>
+
+                <li>
+                    <a href="http://127.0.0.1:8000/gallery">Gallery</a>
+                </li>
+
+                <li>
+                    <a href="http://127.0.0.1:8000/clients">Clients</a>
+                </li>
+
+                <li>
+                    <a href="http://127.0.0.1:8000/careers">Careers</a>
+                </li>
+
+                <li>
+                    <a href="http://127.0.0.1:8000/contact">Contact Us</a>
+                </li>
+
+            </ul>
+
+        </div>
+
+
+        <!-- ================= OUR ADDRESS ================= -->
+        <div class="footer-col footer-address">
+
+            <h3>Our Address</h3>
+
+            <div class="footer-contact-list">
+
+                <!-- HEAD OFFICE -->
+                <div class="footer-contact-item">
+
+                    <i class="fa-solid fa-location-dot"></i>
+
+                    <div class="footer-contact-text">
+
+                        <h5>Head Office (Bhopal)</h5>
+
+                        <p>
+                            233 - Ganesh Nagar, Bawadia Kalan,
+                            Ward 53, Hoshangabad Road,
+                            Bhopal - 462026
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- GWALIOR WORKSHOP -->
+                <div class="footer-contact-item">
+
+                    <i class="fa-solid fa-location-dot"></i>
+
+                    <div class="footer-contact-text">
+
+                        <h5>Gwalior Workshop</h5>
+
+                        <p>
+                            Transport Nagar, Gwalior,
+                            Madhya Pradesh - 474001
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- SAGAR BRANCH -->
+                <div class="footer-contact-item">
+
+                    <i class="fa-solid fa-location-dot"></i>
+
+                    <div class="footer-contact-text">
+
+                        <h5>Sagar Branch</h5>
+
+                        <p>
+                            Jabalpur Road, Near Deepali Hotel,
+                            Baheriya, Makronia,
+                            Sagar (M.P.) - 470001
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- BETUL BRANCH -->
+                <div class="footer-contact-item">
+
+                    <i class="fa-solid fa-location-dot"></i>
+
+                    <div class="footer-contact-text">
+
+                        <h5>Betul Branch</h5>
+
+                        <p>
+                            Itarsi Road, Near Om Residency,
+                            Opposite Daga Oil Mill,
+                            Betul (M.P.) - 460001
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================= SOCIAL MEDIA ================= -->
+        <div class="footer-col footer-social">
+
+            <h3>Social Media</h3>
+
+            <p>
+                Follow us on our official channels to stay updated on
+                our heavy machinery portfolios, service launches,
+                and team delivery events.
+            </p>
+
+            <div class="social-links">
+
+                <a href="https://www.linkedin.com/in/marksmen-construction-38b38a348/"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   aria-label="LinkedIn">
+
+                    <i class="fa-brands fa-linkedin-in"></i>
+
+                </a>
+
+
+                <a href="https://www.instagram.com/marksmen_group_/"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   aria-label="Instagram">
+
+                    <i class="fa-brands fa-instagram"></i>
+
+                </a>
+
+
+                <a href="https://www.youtube.com/@MarketingMarksman"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   aria-label="YouTube">
+
+                    <i class="fa-brands fa-youtube"></i>
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================= FOOTER BOTTOM ================= -->
+
+    <div class="container footer-bottom">
+
+        <p>
+            &copy; 2026 Marksmen Group. All Rights Reserved.
+            Managed by Act T Connect
+        </p>
+
+        <div class="footer-bottom-links">
+
+            <a href="#">Privacy Policy</a>
+
+            <a href="#">Terms &amp; Conditions</a>
+
+        </div>
+
+    </div>
+
+</footer>
+
+  <!-- FLOATING ACTION BUTTONS -->
+  <div class="floating-actions">
+    <a href="https://wa.me/919893911155" target="_blank" class="floating-btn floating-whatsapp" title="WhatsApp Us"><i class="fa-brands fa-whatsapp"></i></a>
+    <a href="tel:+919893911155" class="floating-btn floating-call" title="Call Us"><i class="fa-solid fa-phone"></i></a>
+  </div>
+
+  <!-- POPUP INQUIRY MODAL -->
+  <div class="modal">
+    <div class="modal-backdrop"></div>
+    <div class="modal-wrapper">
+      <div class="modal-close">&times;</div>
+      <h3>Request a Callback</h3>
+      <p>Submit your details and our machinery experts will call you to discuss your project requirements.</p>
+      <form id="modal-callback-form">
+        <div class="modal-form-grid">
+          <div class="form-group">
+            <label for="m-name">Name *</label>
+            <div class="form-field-input-wrapper">
+              <i class="fa-solid fa-user"></i>
+              <input type="text" id="m-name" class="form-input" placeholder="Your name" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="m-phone">Mobile no *</label>
+            <div class="form-field-input-wrapper">
+              <i class="fa-solid fa-mobile-screen-button"></i>
+              <input type="tel" id="m-phone" class="form-input" placeholder="Mobile number" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="m-location">Location *</label>
+            <div class="form-field-input-wrapper">
+              <i class="fa-solid fa-location-dot"></i>
+              <input type="text" id="m-location" class="form-input" placeholder="Your location" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="m-email">Email address</label>
+            <div class="form-field-input-wrapper">
+              <i class="fa-solid fa-envelope"></i>
+              <input type="email" id="m-email" class="form-input" placeholder="Email address">
+            </div>
+          </div>
+          <div class="form-group full-width">
+            <label for="m-enquiry">Product Enquiry *</label>
+            <div class="form-field-input-wrapper">
+              <i class="fa-solid fa-boxes-stacked"></i>
+              <input type="text" id="m-enquiry" class="form-input" placeholder="e.g. Tata Hitachi Excavator, Ascenso Tyres, Spares..." required>
+            </div>
+          </div>
+          <div class="form-group full-width">
+            <label for="m-message">Message / Requirements</label>
+            <div class="form-field-input-wrapper" style="align-items: flex-start;">
+              <i class="fa-solid fa-comment" style="top: 0.75rem;"></i>
+              <textarea id="m-message" class="form-textarea" placeholder="Tell us about your requirements..."></textarea>
+            </div>
+          </div>
+          <div class="form-group full-width">
+            <button type="submit" class="btn btn-primary" style="width: 100%;">Submit Request <i class="fa-solid fa-paper-plane"></i></button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Video Player Lightbox Modal -->
+  <div class="video-modal" id="testimonial-video-modal">
+    <div class="video-modal-backdrop"></div>
+    <div class="video-modal-content">
+      <button class="video-modal-close" aria-label="Close Video">&times;</button>
+      <iframe id="video-iframe" src="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </div>
+  </div>
+
+
+    <script src="http://127.0.0.1:8000/frontend/js/main.js"></script>
+
+    <script>
+    // JS for Accordion
+    document.addEventListener('DOMContentLoaded', () => {
+      const panels = document.querySelectorAll('.acc-panel');
+      panels.forEach(panel => {
+        panel.addEventListener('click', () => {
+          // Remove active from all
+          panels.forEach(p => {
+            p.classList.remove('active');
+            p.style.flex = '0 0 50px';
+            p.querySelector('.acc-title-vertical').style.opacity = '1';
+            p.querySelector('.acc-title-horizontal').style.opacity = '0';
+            p.querySelector('.acc-overlay').style.background = 'rgba(0,0,0,0.5)';
+          });
+          // Add active to clicked
+          panel.classList.add('active');
+          panel.style.flex = '1';
+          panel.querySelector('.acc-title-vertical').style.opacity = '0';
+          panel.querySelector('.acc-title-horizontal').style.opacity = '1';
+          panel.querySelector('.acc-overlay').style.background = 'linear-gradient(to top, rgba(200, 60, 20, 0.85) 0%, transparent 60%)';
+        });
+      });
+    });
+
+    // JS for Product Slider
+    document.addEventListener('DOMContentLoaded', () => {
+      const track = document.getElementById('ascenso-product-track');
+      const prevBtn = document.getElementById('achvr-prev');
+      const nextBtn = document.getElementById('achvr-next');
+      const progress = document.getElementById('achvr-progress');
+      
+      if(!track) return;
+
+      let currentIndex = 0;
+      const totalCards = track.children.length;
+      let cardsVisible = getCardsVisible();
+      let maxIndex = Math.max(0, totalCards - cardsVisible);
+
+      function getCardsVisible() {
+        if(window.innerWidth > 1024) return 4;
+        if(window.innerWidth > 768) return 2;
+        return 1;
+      }
+
+      function updateSlider() {
+        const cardWidth = track.children[0].offsetWidth;
+        const gap = 25;
+        track.style.transform = `translateX(-${currentIndex * (cardWidth + gap)}px)`;
+        
+        // Update progress bar
+        const progressWidth = (cardsVisible / totalCards) * 100;
+        progress.style.width = `${progressWidth}%`;
+        progress.style.left = `${(currentIndex / totalCards) * 100}%`;
+
+        // Update button colors
+        if(currentIndex === 0) {
+          prevBtn.style.borderColor = '#ccc';
+          prevBtn.style.background = '#e0e0e0';
+          prevBtn.style.color = '#999';
+        } else {
+          prevBtn.style.borderColor = '#f15a22';
+          prevBtn.style.background = '#fff';
+          prevBtn.style.color = '#f15a22';
+        }
+        
+        if(currentIndex === maxIndex) {
+          nextBtn.style.borderColor = '#ccc';
+          nextBtn.style.background = '#e0e0e0';
+          nextBtn.style.color = '#999';
+        } else {
+          nextBtn.style.borderColor = '#f15a22';
+          nextBtn.style.background = '#fff';
+          nextBtn.style.color = '#f15a22';
+        }
+      }
+
+      nextBtn.addEventListener('click', () => {
+        if (currentIndex < maxIndex) {
+          currentIndex++;
+          updateSlider();
+        }
+      });
+
+      prevBtn.addEventListener('click', () => {
+        if (currentIndex > 0) {
+          currentIndex--;
+          updateSlider();
+        }
+      });
+
+      // Initialize
+      setTimeout(updateSlider, 100);
+      
+      window.addEventListener('resize', () => {
+        cardsVisible = getCardsVisible();
+        maxIndex = Math.max(0, totalCards - cardsVisible);
+        if(currentIndex > maxIndex) currentIndex = maxIndex;
+        updateSlider();
+      });
+    });
+
+// Testimonial Slider JS
+document.addEventListener('DOMContentLoaded', () => {
+    const testimTrack = document.getElementById('ascenso-testim-track');
+    const testimPrev = document.getElementById('testim-prev');
+    const testimNext = document.getElementById('testim-next');
+    const testimProgress = document.getElementById('testim-progress');
+    
+    if (testimTrack && testimPrev && testimNext) {
+        let currentIndex = 0;
+        const totalCards = testimTrack.children.length;
+        
+        function getVisibleCards() {
+            return window.innerWidth > 768 ? 2 : 1;
+        }
+
+        function updateSlider() {
+            let maxIndex = Math.max(0, totalCards - getVisibleCards());
+            if(currentIndex > maxIndex) currentIndex = maxIndex;
+            
+            const cardWidth = testimTrack.children[0].offsetWidth;
+            const gap = 40;
+            testimTrack.style.transform = `translateX(-${currentIndex * (cardWidth + gap)}px)`;
+            
+            // Update progress bar
+            const visible = getVisibleCards();
+            const progressWidth = (visible / totalCards) * 100;
+            if(testimProgress) {
+                testimProgress.style.width = `${progressWidth}%`;
+                testimProgress.style.left = `${(currentIndex / totalCards) * 100}%`;
+            }
+
+            // Buttons
+            testimPrev.style.borderColor = currentIndex === 0 ? '#ccc' : '#f15a22';
+            testimPrev.style.color = currentIndex === 0 ? '#999' : '#f15a22';
+            testimPrev.style.background = currentIndex === 0 ? '#e0e0e0' : '#fff';
+
+            testimNext.style.borderColor = currentIndex >= maxIndex ? '#ccc' : '#f15a22';
+            testimNext.style.color = currentIndex >= maxIndex ? '#999' : '#f15a22';
+            testimNext.style.background = currentIndex >= maxIndex ? '#e0e0e0' : '#fff';
+        }
+
+        testimNext.addEventListener('click', (e) => {
+            e.preventDefault();
+            let maxIndex = Math.max(0, totalCards - getVisibleCards());
+            if (currentIndex < maxIndex) {
+                currentIndex++;
+                updateSlider();
+            }
+        });
+
+        testimPrev.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (currentIndex > 0) {
+                currentIndex--;
+                updateSlider();
+            }
+        });
+
+        window.addEventListener('resize', updateSlider);
+        setTimeout(updateSlider, 150);
+    }
+});
+
+// Instagram Slider JS
+document.addEventListener('DOMContentLoaded', () => {
+    const instaTrack = document.getElementById('insta-track');
+    const instaDotsContainer = document.getElementById('insta-dots');
+    
+    if (instaTrack && instaDotsContainer) {
+        let currentIndex = 0;
+        const totalCards = instaTrack.children.length;
+        
+        function getVisibleCards() {
+            if (window.innerWidth > 1024) return 4;
+            if (window.innerWidth > 768) return 2;
+            return 1;
+        }
+
+        function buildDots(maxIndex) {
+            instaDotsContainer.innerHTML = '';
+            const steps = maxIndex + 1;
+            if(steps <= 1) {
+                instaDotsContainer.style.display = 'none';
+                return;
+            }
+            instaDotsContainer.style.display = 'flex';
+            instaDotsContainer.style.alignItems = 'center';
+            
+            for(let i=0; i<steps; i++) {
+                if (i === currentIndex) {
+                    instaDotsContainer.innerHTML += `<div style="width: 18px; height: 18px; border-radius: 50%; border: 2px solid #222; display: flex; align-items: center; justify-content: center; cursor: pointer; margin: 0 4px;" onclick="window.goToInsta(${i})"><div style="width: 8px; height: 8px; border-radius: 50%; background: #222;"></div></div>`;
+                } else {
+                    instaDotsContainer.innerHTML += `<div style="width: 10px; height: 10px; border-radius: 50%; background: #222; cursor: pointer; opacity: 0.5; margin: 0 4px;" onclick="window.goToInsta(${i})"></div>`;
+                }
+            }
+        }
+        
+        window.goToInsta = function(index) {
+            currentIndex = index;
+            updateInstaSlider();
+        };
+
+        function updateInstaSlider() {
+            let maxIndex = Math.max(0, totalCards - getVisibleCards());
+            if(currentIndex > maxIndex) currentIndex = maxIndex;
+            
+            const cardWidth = instaTrack.children[0].offsetWidth;
+            const gap = 20;
+            instaTrack.style.transform = `translateX(-${currentIndex * (cardWidth + gap)}px)`;
+            buildDots(maxIndex);
+        }
+
+        window.addEventListener('resize', updateInstaSlider);
+        setTimeout(updateInstaSlider, 150);
+    }
+});
+
+// Vertical Tabs JS
+document.addEventListener('DOMContentLoaded', () => {
+    const vtabImg = document.getElementById('vtab-img');
+    const vtabTitle = document.getElementById('vtab-title');
+    const vtabText = document.getElementById('vtab-text');
+    const vtabContainer = document.getElementById('vtab-content-container');
+    const tabsContainer = document.getElementById('vtab-tabs-container');
+
+    const allData = [
+        {
+            title: "SUSTAINABILITY INITIATIVES",
+            text: "We make a conscious effort to ensure we are aligned towards our goal: to achieve a zero carbon footprint.",
+            img: "http://127.0.0.1:8000/frontend/assets/images/ascenso_product.png"
+        },
+        {
+            title: "WE NEVER STOPPED RISING: THE ASCENSO STORY.",
+            text: "After building two global giants in the off-highway tyre segment, the illustrious Mahansaria family created Ascenso, its third off-highway tyre manufacturing brand.",
+            img: "http://127.0.0.1:8000/frontend/assets/images/ascenso_product.jpg"
+        },
+        {
+            title: "MANUFACTURING EXCELLENCE",
+            text: "Our state-of-the-art manufacturing facility in Panoli, Gujarat, India spans over 127 acres.",
+            img: "http://127.0.0.1:8000/frontend/assets/images/ascenso_product.png"
+        },
+        {
+            title: "MILESTONES",
+            text: "A journey of continuous growth and expanding global presence across 100+ countries.",
+            img: "http://127.0.0.1:8000/frontend/assets/images/ascenso_product.jpg"
+        },
+        {
+            title: "OUR SUBSIDIARIES",
+            text: "Expanding our reach through strategic subsidiaries worldwide.",
+            img: "http://127.0.0.1:8000/frontend/assets/images/ascenso_product.png"
+        }
+    ];
+
+    let activeIndex = 1; // "story" is active initially
+
+    function renderTabs() {
+        if(!tabsContainer) return;
+        tabsContainer.innerHTML = '';
+        
+        allData.forEach((item, index) => {
+            if (index === activeIndex) return; // Skip active item for tabs
+
+            const tab = document.createElement('div');
+            tab.style.flex = '1';
+            tab.style.borderLeft = '1px solid #f15a22';
+            tab.style.display = 'flex';
+            tab.style.flexDirection = 'column';
+            tab.style.justifyContent = 'flex-end'; // push to bottom
+            tab.style.alignItems = 'flex-start'; // stick to the left line
+            tab.style.paddingLeft = '15px';
+            tab.style.paddingBottom = '20px';
+            tab.style.cursor = 'pointer';
+            
+            const textSpan = document.createElement('span');
+            textSpan.textContent = item.title;
+            textSpan.style.writingMode = 'vertical-rl';
+            textSpan.style.transform = 'rotate(180deg)';
+            textSpan.style.color = '#4a4a4a';
+            textSpan.style.fontWeight = '700';
+            textSpan.style.fontSize = '1.05rem';
+            textSpan.style.textTransform = 'uppercase';
+            textSpan.style.letterSpacing = '1px';
+            textSpan.style.whiteSpace = 'nowrap';
+            textSpan.style.transition = 'color 0.3s';
+            
+            tab.addEventListener('mouseenter', () => textSpan.style.color = '#f15a22');
+            tab.addEventListener('mouseleave', () => textSpan.style.color = '#4a4a4a');
+
+            tab.addEventListener('click', () => {
+                activeIndex = index;
+                if(vtabContainer) vtabContainer.style.opacity = '0';
+                
+                setTimeout(() => {
+                    if(vtabImg) vtabImg.src = item.img;
+                    if(vtabTitle) vtabTitle.textContent = item.title;
+                    if(vtabText) vtabText.textContent = item.text;
+                    renderTabs();
+                    if(vtabContainer) vtabContainer.style.opacity = '1';
+                }, 300);
+            });
+
+            tab.appendChild(textSpan);
+            tabsContainer.appendChild(tab);
+        });
+    }
+
+    renderTabs();
+});
+
+// Latest at Ascenso Tabs JS
+document.addEventListener('DOMContentLoaded', () => {
+    const btnNews = document.getElementById('btn-tab-news');
+    const btnEvents = document.getElementById('btn-tab-events');
+    const btnExhibitions = document.getElementById('btn-tab-exhibitions');
+    
+    const contentNews = document.getElementById('tab-content-news');
+    const contentEvents = document.getElementById('tab-content-events');
+    const contentExhibitions = document.getElementById('tab-content-exhibitions');
+
+    const tabs = [btnNews, btnEvents, btnExhibitions];
+    const contents = [contentNews, contentEvents, contentExhibitions];
+
+    if (btnNews && contentNews) {
+        tabs.forEach((tab, index) => {
+            if(!tab) return;
+            tab.addEventListener('click', (e) => {
+                e.preventDefault();
+                // Remove active from all tabs
+                tabs.forEach(t => {
+                    if(t) {
+                        t.classList.remove('active');
+                        t.style.background = '#fff';
+                        t.style.color = '#f15a22';
+                    }
+                });
+                // Hide all contents
+                contents.forEach(c => {
+                    if(c) c.style.display = 'none';
+                });
+                
+                // Set current active
+                tab.classList.add('active');
+                tab.style.background = '#f15a22';
+                tab.style.color = '#fff';
+                if(contents[index]) contents[index].style.display = 'flex';
+            });
+        });
+    }
+});
+</script>
+
+</body>
+
+</html>
+

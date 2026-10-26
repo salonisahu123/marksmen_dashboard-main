@@ -1,0 +1,22 @@
+
+   ReflectionException 
+
+  Class "App\Http\Controllers\TaskController" does not exist
+
+  at vendor\laravel\framework\src\Illuminate\Foundation\Console\RouteListCommand.php:289
+    285▕             if ($this->isFrameworkController($route)) {
+    286▕                 return false;
+    287▕             }
+    288▕ 
+  ➜ 289▕             $path = (new ReflectionClass($route->getControllerClass()))
+    290▕                 ->getFileName();
+    291▕         } else {
+    292▕             return false;
+    293▕         }
+
+  1   vendor\laravel\framework\src\Illuminate\Foundation\Console\RouteListCommand.php:289
+      ReflectionClass::__construct("App\Http\Controllers\TaskController")
+
+  2   vendor\laravel\framework\src\Illuminate\Foundation\Console\RouteListCommand.php:165
+      Illuminate\Foundation\Console\RouteListCommand::isVendorRoute(Object(Illuminate\Routing\Route))
+
